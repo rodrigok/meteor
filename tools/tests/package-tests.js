@@ -294,6 +294,15 @@ selftest.define("add packages to app", ["net"], function () {
   checkPackages(s,
                 ["meteor-platform", "accounts-base"]);
 
+  // Adding the nonexistent version now should still say "no such
+  // version". Regression test for
+  // https://github.com/meteor/meteor/issues/2898.
+  run = s.run("add", "accounts-base@0.123.123");
+  run.matchErr("no such version");
+  run.expectExit(1);
+  run.forbid("Currently using accounts-base");
+  run.forbid("will be changed to");
+
   run = s.run("--once");
 
   run = s.run("add", "say-something@1.0.0");
